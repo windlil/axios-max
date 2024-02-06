@@ -1,0 +1,16 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  epxress:
+    specifier: 0.0.1-security
+    version: 0.0.1-security
+
+packages:
+
+  /epxress@0.0.1-security:
+    resolution: {integrity: sha512-3Uxqdqt9xUpPvEGJjhyNGbTtjeYRsSCy74gsYxMqeIUQnRk/6/YFgvjfQtdPeFgRXEnJ8zI6gaskfFLOOG/ELg==}
+    dev: false
