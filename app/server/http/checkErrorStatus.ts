@@ -13,6 +13,13 @@ export function checkErrorStatus(status: number, callback: (errorMessage: string
     case 403:
       errorMessage = '用户得到授权，但是访问是被禁止的!'
       break
+    case 404:
+      errorMessage = '未找到目标资源!'
+    case 500:
+      errorMessage = '服务器错误!'
+    case 503:
+      errorMessage = '服务器错误！'
+      break
   }
   if (errorMessage.length > 0) {
     callback(errorMessage)

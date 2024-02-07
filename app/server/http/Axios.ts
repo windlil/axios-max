@@ -1,10 +1,11 @@
 import type { AxiosOptions, RequstInterceptors, Respones } from './type'
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import axios from 'axios'
+import AbortAxios from './AbortAxios'
 
 class AxiosMax {
   private axiosInstance: AxiosInstance
-  private options
+  private options: AxiosOptions
   private interceptors: RequstInterceptors | undefined
   constructor(options: AxiosOptions) {
     this.axiosInstance = axios.create(options)
@@ -23,11 +24,19 @@ class AxiosMax {
       requestInterceptors,
       requestInterceptorsCatch,
       responseInterceptor,
-      responseInterceptorCatch
+      responseInterceptorsCatch
     } = this.interceptors
+
+    const abortAxios = new AbortAxios()
 
     // 请求拦截器
     this.axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+      // 是否清除重复请求
+      const abortRepetitiveRequest = (config as unknown as any)?.abortRepetitiveRequest ?? this.options.abortRepetitiveRequest
+      if (abortRepetitiveRequest) {
+        // 存储请求标识
+        abortAxios.addPending(config)
+      }
       if (requestInterceptors) {
         config = requestInterceptors(config)
       }
@@ -36,11 +45,18 @@ class AxiosMax {
 
     // 响应拦截器
     this.axiosInstance.interceptors.response.use((res: AxiosResponse) => {
+      res && abortAxios.removePending(res.config)
       if (responseInterceptor) {
+        // 清除重复请求
         res = responseInterceptor(res)
       }
       return res
-    }, responseInterceptorCatch ?? undefined)
+    }, (err: AxiosError) => {
+      if (responseInterceptorsCatch) {
+        return responseInterceptorsCatch(this.axiosInstance, err)
+      }
+      return err
+    })
 
   }
 
