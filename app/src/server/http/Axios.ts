@@ -47,11 +47,14 @@ class AxiosMax {
     this.axiosInstance.interceptors.response.use((res: AxiosResponse) => {
       res && abortAxios.removePending(res.config)
       if (responseInterceptor) {
-        // 清除重复请求
         res = responseInterceptor(res)
+      }
+      if (this.options.directlyGetData) {
+        res = res.data
       }
       return res
     }, (err: AxiosError) => {
+
       if (responseInterceptorsCatch) {
         return responseInterceptorsCatch(this.axiosInstance, err)
       }

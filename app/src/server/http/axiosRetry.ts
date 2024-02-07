@@ -1,10 +1,11 @@
-import type { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import type { AxiosError, AxiosInstance } from "axios";
 
 export function retry(instance: AxiosInstance, err: AxiosError) {
-  const config: any = err.response?.config
+  const config: any = err.config
   const { waitTime, count } = config.retryConfig ?? {}
-  let currentCount = config.currentCount ?? 0
-  if (currentCount > count) {
+  config.currentCount = config.currentCount ?? 0
+  console.log(`第${config.currentCount}次重连`)
+  if (config.currentCount >= count) {
     return Promise.reject(err)
   }
   config.currentCount++

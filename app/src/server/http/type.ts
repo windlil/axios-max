@@ -1,6 +1,7 @@
 import type { AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse, AxiosInstance, AxiosError } from 'axios'
 
 export interface AxiosOptions extends AxiosRequestConfig {
+  directlyGetData?: boolean
   interceptors?: RequstInterceptors
   abortRepetitiveRequest?: boolean
   retryConfig?: {
@@ -10,10 +11,10 @@ export interface AxiosOptions extends AxiosRequestConfig {
 }
 
 export abstract class RequstInterceptors {
-  requestInterceptors?: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig
-  requestInterceptorsCatch: (err: Error) => Error
-  responseInterceptor?: (res: AxiosResponse) => AxiosResponse
-  responseInterceptorsCatch?: (axiosInstance: AxiosInstance, error: AxiosError) => void;
+  abstract requestInterceptors?: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig
+  abstract requestInterceptorsCatch: (err: Error) => Error
+  abstract responseInterceptor?: (res: AxiosResponse) => AxiosResponse
+  abstract responseInterceptorsCatch?: (axiosInstance: AxiosInstance, error: AxiosError) => void;
 }
 
 /**
