@@ -21,6 +21,7 @@ const _RequstInterceptors: RequstInterceptors = {
     if (axios.isCancel(err)) {
       return Promise.reject(err);
     }
+    console.log(err)
     checkErrorStatus((err as AxiosError).response?.status, message,  (message) => console.log(message))
     return retry(axiosInstance, err as AxiosError)
   },
